@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="nodejs,Web编程,Angular,express," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本项目在期中项目（指路链接：Web编程期中实践——Nodejs新闻爬虫及查询网站）的基础上修改完成。· 项目要求">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web编程期末实践——Angular+nodejs-express搭建简易新闻查询网站">
+<meta property="og:url" content="https://hydududu.github.io/2021/06/30/Web%E7%BC%96%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94Angular+nodejs-express%E6%90%AD%E5%BB%BA%E7%AE%80%E6%98%93%E6%96%B0%E9%97%BB%E6%9F%A5%E8%AF%A2%E7%BD%91%E7%AB%99/index.html">
+<meta property="og:site_name" content="hyDududu">
+<meta property="og:description" content="本项目在期中项目（指路链接：Web编程期中实践——Nodejs新闻爬虫及查询网站）的基础上修改完成。· 项目要求">
+<meta property="og:locale">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210629170803170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210629232841726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630012127149.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630015921308.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630023550924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630022801992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630025615388.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630025849821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630030452205.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630031733872.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630032318305.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20210630032926113.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-06-29T19:37:00.000Z">
+<meta property="article:modified_time" content="2022-03-27T06:34:22.435Z">
+<meta property="article:author" content="hyDududu">
+<meta property="article:tag" content="nodejs">
+<meta property="article:tag" content="Web编程">
+<meta property="article:tag" content="Angular">
+<meta property="article:tag" content="express">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20210629170803170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hyDududu.github.io/2021/06/30/Web编程期末实践——Angular+nodejs-express搭建简易新闻查询网站/"/>
+
+
+
+
+
+  <title>Web编程期末实践——Angular+nodejs-express搭建简易新闻查询网站 | hyDududu</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">hyDududu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hyDududu.github.io/2021/06/30/Web%E7%BC%96%E7%A8%8B%E6%9C%9F%E6%9C%AB%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94Angular+nodejs-express%E6%90%AD%E5%BB%BA%E7%AE%80%E6%98%93%E6%96%B0%E9%97%BB%E6%9F%A5%E8%AF%A2%E7%BD%91%E7%AB%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hyDududu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Web编程期末实践——Angular+nodejs-express搭建简易新闻查询网站</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T03:37:00+08:00">
+                2021-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/" itemprop="url" rel="index">
+                    <span itemprop="name">课程作业</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本项目在期中项目（指路链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/lit_chicken/article/details/116073834">Web编程期中实践——Nodejs新闻爬虫及查询网站</a>）的基础上修改完成。<br>·</p>
+<h2 id="项目要求"><a href="#项目要求" class="headerlink" title="项目要求"></a>项目要求</h2><p><img src="https://img-blog.csdnimg.cn/20210629170803170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="项目要求"></p>
+<span id="more"></span>
+
+<h2 id="数据库设计"><a href="#数据库设计" class="headerlink" title="数据库设计"></a>数据库设计</h2><p>该项目我们在crawl数据库中设计了3个表：fetches、user和user_action。<br><img src="https://img-blog.csdnimg.cn/20210629232841726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>（1）fetches表同期中项目的设计一样，只不过我们在此处修改优化了当时的爬虫代码，利用正则表达式规范爬取的数据，比如对author一栏，确保获得并存储进数据库的作者名足够“干净”，有利于后续在网页中的数据展示。</p>
+<p>（2）user表包含基本用户信息（姓名、密码、注册时间），此外还设置<strong>power</strong>和<strong>state</strong>两项来记录 <strong>用户身份</strong>（管理员or普通用户）和 <strong>状态</strong>（正常or冻结）。<br>    同时，我们人为向数据库中插入一条记录，创建管理员admin。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into crawl.<span class="title function_">user</span>(username, password, power, state) <span class="title function_">values</span>(<span class="string">&#x27;admin&#x27;</span>, <span class="number">12345</span>, <span class="string">&#x27;super&#x27;</span>, <span class="string">&#x27;normal&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>（3）user_action表存放所有用户在该网站上的所有操作记录（如请求时间、用户所在IP地址、请求内容、响应状态等）。<br>·</p>
+<h2 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h2><p>如图，我们在express搭建框架生成的search_site文件中进行一些基础的配置（express框架搭建见我们期中项目博客）。<br>在mysqlConf.js中配置mysql连接参数；<br><img src="https://img-blog.csdnimg.cn/20210630012127149.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在app.js中设置路由路径、导入angular框架、设置session参数等，以及设置将用户的操作记录存入数据库。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> usersRouter = <span class="built_in">require</span>(<span class="string">&#x27;./routes/users&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> newsRouter = <span class="built_in">require</span>(<span class="string">&#x27;./routes/news&#x27;</span>);</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>·</p>
+<h2 id="用户注册、登录及登出"><a href="#用户注册、登录及登出" class="headerlink" title="用户注册、登录及登出"></a>用户注册、登录及登出</h2><p>我们在index.html上实现了一个简洁明了的登录和注册窗口，能根据用户的操作进行相应提示。</p>
+<ol>
+<li>注册：<br> a.用户已存在；<br> b.两次输入密码不一致；<br> c.注册成功后自动跳转登录界面。</li>
+<li>登录：<br>a. 用户名或密码错误；<br>b. 用户被冻结，无法登陆；<br>c. 用户不存在，请先注册。<br><img src="https://img-blog.csdnimg.cn/20210630015921308.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>同时，我们也不忘设计对未登录用户，当其处于非登录页面时，不允许其查看网页，并强制其跳转登录（此处的设计仍不够完善，通过用户触发操作函数时判断是否有登录用户来达到该目的，存在耦合、冗余的问题，之后有待改进）。</li>
+</ol>
+<p>登出选项我们则设置在网站各页面的导航栏中，一旦退出，则清除session。<br><img src="https://img-blog.csdnimg.cn/20210630023550924.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>·</p>
+<h2 id="新闻查询"><a href="#新闻查询" class="headerlink" title="新闻查询"></a>新闻查询</h2><p>由于我们将新闻查询和图表展示的内容置于同一个界面news.html，结构稍显耦合、复杂，故通过<strong>ng-show</strong>、<strong>ng-hide</strong>两个参数来调控页面的展示布局。<br>这里<strong>isShow</strong>作用于所有图表，<strong>isShow2</strong>控制折线图的查询框。通过二者合取的结果来控制新闻查询窗口的显示与否。我们默认初始时显示新闻查询窗口。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-show</span>=<span class="string">&quot;isShow &amp;&amp; isShow2&quot;</span> <span class="attr">style</span>=<span class="string">&quot;width: 1150px;position:relative; top:70px;left: 80px&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--    查询页面--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-include</span>=<span class="string">&quot;&#x27;search.html&#x27;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>对于新闻查询，我们实现了多条件组合查询，可同时对标题、内容、作者和来源搜索，并且对标题和内容关键字还配备布尔查询AND和OR选项。<br>结果页面简洁明了，直接展示总结果记录数；对标题赋予超链接，用户可直接点击跳转到新闻页面；同时还实现新闻按时间升序、降序排列；以及分页展示结果。<br><img src="https://img-blog.csdnimg.cn/20210630022801992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>查询页路由 routes&#x2F;news.js：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">router.<span class="title function_">get</span>(<span class="string">&#x27;/search&#x27;</span>, <span class="keyword">function</span>(<span class="params">request, response</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (request.<span class="property">session</span>[<span class="string">&#x27;username&#x27;</span>]===<span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="comment">// response.redirect(&#x27;/index.html&#x27;)</span></span><br><span class="line">        response.<span class="title function_">json</span>(&#123;<span class="attr">message</span>:<span class="string">&#x27;url&#x27;</span>,<span class="attr">result</span>:<span class="string">&#x27;/index.html&#x27;</span>&#125;);</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> param = request.<span class="property">query</span>;</span><br><span class="line">        newsDAO.<span class="title function_">search</span>(param,<span class="keyword">function</span> (<span class="params">err, result, fields</span>) &#123;</span><br><span class="line">            response.<span class="title function_">json</span>(&#123;<span class="attr">message</span>:<span class="string">&#x27;data&#x27;</span>,<span class="attr">result</span>:result&#125;);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>查询结果展示 public&#x2F;search.html：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--isisshowresult：控制显示查询结果--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-show</span>=<span class="string">&quot;isisshowresult&quot;</span> <span class="attr">style</span>=<span class="string">&quot;padding:0 1em;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">b</span>&gt;</span>共 &#123;&#123;datasize&#125;&#125; 条记录<span class="tag">&lt;/<span class="name">b</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">table</span> <span class="attr">class</span>=<span class="string">&quot;table table-striped&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">thead</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>序号<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>标题<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>作者<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>关键词<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>来源<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">td</span>&gt;</span>发布时间<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">thead</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tbody</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tr</span> <span class="attr">ng-repeat</span>=<span class="string">&quot;(key, item) in items&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>&#123;&#123;index+key&#125;&#125;<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&#123;&#123;item.url&#125;&#125;</span>&gt;</span>&#123;&#123;item.title&#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>&#123;&#123;item.author&#125;&#125;<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>&#123;&#123;item.keywords&#125;&#125;<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>&#123;&#123;item.source_name&#125;&#125;<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">td</span>&gt;</span>&#123;&#123;item.publish_date&#125;&#125;<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">tbody</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>·</p>
+<h2 id="图表展示"><a href="#图表展示" class="headerlink" title="图表展示"></a>图表展示</h2><p>以下我们一共实现了4个图表，通过导航栏中下拉菜单来选择目标图像，并用 <strong>isShow</strong> 和 <strong>isShow2</strong> 标签来控制同在 news.html 页面的各图表的显示。<br>·</p>
+<h3 id="柱状图"><a href="#柱状图" class="headerlink" title="柱状图"></a>柱状图</h3><p><img src="https://img-blog.csdnimg.cn/20210630025615388.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>展示了 新闻发布数 随时间的变化情况。<br>·</p>
+<h3 id="饼图"><a href="#饼图" class="headerlink" title="饼图"></a>饼图</h3><p><img src="https://img-blog.csdnimg.cn/20210630025849821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>由于作者数目过多，这里仅展示了新闻发布数在10篇以上的作者分布的饼图。之前提到的对爬虫进行优化以得到“干净”的作者名能方便此处饼图的展示。（虽然也可以在展示饼图时对不干净的作者名进行处理，但当用户数目以及页面访问次数增多时，会带来不必要的开销，因此我们追求在初始时就将干净的数据存入数据库。）<br>·</p>
+<h3 id="折线图"><a href="#折线图" class="headerlink" title="折线图"></a>折线图</h3><p>这里对折线图的实现要稍复杂，需要用户现在搜索框中输入想要查询的词语，再处理显示对应词语在不同时间的新闻中出现的次数图。<br><img src="https://img-blog.csdnimg.cn/20210630030452205.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>public&#x2F;new.html：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;dropdown&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span> <span class="attr">class</span>=<span class="string">&quot;dropdown-toggle&quot;</span> <span class="attr">data-toggle</span>=<span class="string">&quot;dropdown&quot;</span>&gt;</span>图片<span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;caret&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">&quot;dropdown-menu&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">ng-click</span>=<span class="string">&quot;histogram()&quot;</span>&gt;</span>柱状图<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">ng-click</span>=<span class="string">&quot;pie()&quot;</span>&gt;</span>饼状图<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">ng-click</span>=<span class="string">&quot;word_freq()&quot;</span>&gt;</span>折线图<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">ng-click</span>=<span class="string">&quot;wordcloud()&quot;</span>&gt;</span>词云<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--    所有的图片都绘制在main1位置--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">ng-hide</span>=<span class="string">&quot;isShow&quot;</span> <span class="attr">id</span>=<span class="string">&quot;main1&quot;</span> <span class="attr">style</span>=<span class="string">&quot;width: 1000px;height:600px;position:fixed; top:70px;left:80px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 折线图搜索框显示 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-hide</span>=<span class="string">&quot;isShow2&quot;</span> <span class="attr">id</span>=<span class="string">&quot;main1&quot;</span> <span class="attr">style</span>=<span class="string">&quot;width: 1000px;height:600px;position:fixed; top:70px;left:80px&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;row&quot;</span> <span class="attr">style</span>=<span class="string">&quot;margin-bottom: 10px&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-lg-2&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;查询词语&quot;</span> <span class="attr">ng-model</span>=<span class="string">&quot;$parent.word_search&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;col-lg-2&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">class</span>=<span class="string">&quot;btn btn-default&quot;</span> <span class="attr">ng-click</span>=<span class="string">&quot;wordSearch()&quot;</span>&gt;</span>查询<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>public&#x2F;javascripts&#x2F;news.js：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">$scope.<span class="property">word_freq</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    $scope.<span class="property">isShow</span> = <span class="literal">true</span>;  <span class="comment">// 调用wordSearch()后再显示</span></span><br><span class="line">    $scope.<span class="property">isShow2</span> = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">$scope.<span class="property">wordSearch</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    $scope.<span class="property">isShow</span> = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> word_search = $scope.<span class="property">word_search</span>;</span><br><span class="line">    <span class="keyword">var</span> word_url = <span class="string">`/news/wordSearch?word_search=<span class="subst">$&#123;word_search&#125;</span>`</span>;</span><br><span class="line">    $http.<span class="title function_">get</span>(word_url).<span class="title function_">then</span>(</span><br><span class="line">        <span class="keyword">function</span> (<span class="params">res</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (res.<span class="property">data</span>.<span class="property">message</span> == <span class="string">&#x27;data&#x27;</span>) &#123;</span><br><span class="line">                <span class="keyword">var</span> myChart = echarts.<span class="title function_">init</span>(<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;main1&quot;</span>));</span><br><span class="line">                option = &#123;</span><br><span class="line">                    <span class="attr">title</span>: &#123;</span><br><span class="line">                        <span class="attr">text</span>: <span class="string">&#x27;&quot;&#x27;</span> + word_search + <span class="string">&#x27;&quot;该词在新闻中的出现次数随时间变化图&#x27;</span>,</span><br><span class="line">                        <span class="attr">x</span>: <span class="string">&#x27;center&#x27;</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">xAxis</span>: &#123;</span><br><span class="line">                        <span class="attr">type</span>: <span class="string">&#x27;category&#x27;</span>,</span><br><span class="line">                        <span class="attr">data</span>: <span class="title class_">Object</span>.<span class="title function_">keys</span>(res.<span class="property">data</span>.<span class="property">result</span>)</span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">yAxis</span>: &#123;</span><br><span class="line">                        <span class="attr">type</span>: <span class="string">&#x27;value&#x27;</span></span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="attr">series</span>: [&#123;</span><br><span class="line">                        <span class="attr">data</span>: <span class="title class_">Object</span>.<span class="title function_">values</span>(res.<span class="property">data</span>.<span class="property">result</span>),</span><br><span class="line">                        <span class="attr">type</span>: <span class="string">&#x27;line&#x27;</span>,</span><br><span class="line">                        <span class="attr">itemStyle</span>: &#123; <span class="attr">normal</span>: &#123; <span class="attr">label</span>: &#123; <span class="attr">show</span>: <span class="literal">true</span> &#125; &#125; &#125;</span><br><span class="line">                    &#125;],</span><br><span class="line">                &#125;;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (option &amp;&amp; <span class="keyword">typeof</span> option === <span class="string">&quot;object&quot;</span>) &#123;</span><br><span class="line">                    myChart.<span class="title function_">setOption</span>(option, <span class="literal">true</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="keyword">function</span> (<span class="params">err</span>) &#123;</span><br><span class="line">            $scope.<span class="property">msg</span> = err.<span class="property">data</span>;</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>routes&#x2F;news.js：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">router.<span class="title function_">get</span>(<span class="string">&#x27;/wordSearch&#x27;</span>, <span class="keyword">function</span>(<span class="params">request, response</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (request.<span class="property">session</span>[<span class="string">&#x27;username&#x27;</span>]===<span class="literal">undefined</span>) &#123;</span><br><span class="line">        response.<span class="title function_">json</span>(&#123;<span class="attr">message</span>:<span class="string">&#x27;url&#x27;</span>,<span class="attr">result</span>:<span class="string">&#x27;/index.html&#x27;</span>&#125;);</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> keyword = request.<span class="property">query</span>[<span class="string">&quot;word_search&quot;</span>];  <span class="comment">// 前端提交传入的搜索词</span></span><br><span class="line">        <span class="keyword">var</span> fetchSql = <span class="string">&quot;select content,publish_date from fetches where content like&#x27;%&quot;</span> + keyword + <span class="string">&quot;%&#x27; order by publish_date;&quot;</span>;</span><br><span class="line">        newsDAO.<span class="title function_">query_noparam</span>(fetchSql, <span class="keyword">function</span> (<span class="params">err, result, fields</span>) &#123;</span><br><span class="line">            response.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123;</span><br><span class="line">                <span class="string">&quot;Content-Type&quot;</span>: <span class="string">&quot;application/json&quot;</span>,</span><br><span class="line">                <span class="string">&quot;Cache-Control&quot;</span>: <span class="string">&quot;no-cache, no-store, must-revalidate&quot;</span>,</span><br><span class="line">                <span class="string">&quot;Pragma&quot;</span>: <span class="string">&quot;no-cache&quot;</span>,</span><br><span class="line">                <span class="string">&quot;Expires&quot;</span>: <span class="number">0</span></span><br><span class="line">            &#125;);</span><br><span class="line">            response.<span class="title function_">write</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123;<span class="attr">message</span>:<span class="string">&#x27;data&#x27;</span>,<span class="attr">result</span>:myfreqchangeModule.<span class="title function_">freqchange</span>(result, keyword)&#125;));</span><br><span class="line">            response.<span class="title function_">end</span>();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>·</p>
+<h3 id="词云"><a href="#词云" class="headerlink" title="词云"></a>词云</h3><p>在绘制词云时，我们调用了 <strong>nodejieba</strong> 库，通过 <strong>extract()</strong> 方法抽选出每篇新闻中排名前20的词语，合并作为词云的数据集。<br>由于nodejieba没有去除停用词的方法，人工去除较为麻烦，故用 extract 能较好地避免展示的数据中高频词多为停用词的情况。<br><img src="https://img-blog.csdnimg.cn/20210630031733872.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>·</p>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><p>鉴于对用户相关的操作较多，我们单独新建 userSQLMap.js 文件来记录所需SQL命令，解耦合便于操作。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> userSqlMap = &#123;</span><br><span class="line">    <span class="attr">add</span>: <span class="string">&#x27;insert into user(username, password, power, state) values(?, ?, \&#x27;normal\&#x27;, \&#x27;normal\&#x27;)&#x27;</span>,  <span class="comment">//注册时用，默认非管理员</span></span><br><span class="line">    <span class="attr">getByUsername</span>: <span class="string">&#x27;select username, password from user where username = ?&#x27;</span>,  <span class="comment">//登陆时用</span></span><br><span class="line">    <span class="attr">getPower</span>: <span class="string">&#x27;select power from user where username = ?&#x27;</span>,  <span class="comment">// 查询该用户是否是管理员</span></span><br><span class="line">    <span class="attr">getAllUsers</span>: <span class="string">&#x27;select * from user&#x27;</span>,  <span class="comment">// 查询所有用户</span></span><br><span class="line">    <span class="attr">freezeUser</span>: <span class="string">&#x27;update user set state = \&#x27;freeze\&#x27; where username = ?&#x27;</span>,  <span class="comment">// 冻结用户</span></span><br><span class="line">    <span class="attr">unfreezeUser</span>: <span class="string">&#x27;update user set state = \&#x27;normal\&#x27; where username = ?&#x27;</span>,  <span class="comment">// 解冻用户</span></span><br><span class="line">    <span class="attr">powerUser</span>: <span class="string">&#x27;update user set power = \&#x27;super\&#x27; where username = ?&#x27;</span>,  <span class="comment">// 设置用户为管理员</span></span><br><span class="line">    <span class="attr">unpowerUser</span>: <span class="string">&#x27;update user set power = \&#x27;normal\&#x27; where username = ?&#x27;</span>,  <span class="comment">// 取消用户管理员权限</span></span><br><span class="line">    <span class="attr">getHistory</span>: <span class="string">&#x27;select * from user_action where username = ?&#x27;</span>,  <span class="comment">// 获取用户历史记录</span></span><br><span class="line">    <span class="attr">getState</span>: <span class="string">&#x27;select state from user where username = ?&#x27;</span>,  <span class="comment">// 查询用户状态</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = userSqlMap;</span><br></pre></td></tr></table></figure>
+<p>·<br>同样，我们通过点击导航栏“账号管理”下拉菜单中的“管理”选项可以跳转管理界面。但此处仅对 <strong>管理员</strong> 身份用户有效，若为普通用户则点击无用，会跳转会新闻查询界面。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 管理用户</span></span><br><span class="line">router.<span class="title function_">get</span>(<span class="string">&#x27;/manage&#x27;</span>, <span class="keyword">function</span> (<span class="params">req, res, next</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> user = req.<span class="property">session</span>;</span><br><span class="line">  <span class="keyword">if</span> (user[<span class="string">&#x27;username&#x27;</span>] === <span class="literal">undefined</span>) &#123;</span><br><span class="line">    response.<span class="title function_">json</span>(&#123; <span class="attr">message</span>: <span class="string">&#x27;url&#x27;</span>, <span class="attr">result</span>: <span class="string">&#x27;/index.html&#x27;</span> &#125;);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    userDAO.<span class="title function_">getPower</span>(user.<span class="property">username</span>, <span class="keyword">function</span> (<span class="params">powerflag</span>) &#123;</span><br><span class="line">      <span class="comment">// 返回的powerflag为：[ RowDataPacket &#123; power: 1 &#125; ]</span></span><br><span class="line">      <span class="keyword">if</span> (powerflag[<span class="number">0</span>].<span class="property">power</span> != <span class="string">&#x27;super&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">// res.json(&#123; msg: &#x27;您并非管理员，暂无该权限&#x27; &#125;);</span></span><br><span class="line">        res.<span class="title function_">json</span>(&#123; <span class="attr">msg</span>: <span class="string">&#x27;url&#x27;</span>, <span class="attr">result</span>: <span class="string">&#x27;/news.html&#x27;</span> &#125;);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        res.<span class="title function_">json</span>(&#123; <span class="attr">result</span>: <span class="string">&#x27;/manage.html&#x27;</span> &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>·<br>我们利用 <strong>ng-show</strong> 和 <strong>ng-hide</strong> 设置标签来美化页面布局。通过单击 查询用户 按钮来展示所有用户，以及他们的身份（管理员与否）、账户状态（冻结or正常）。<br>还可通过输入用户名，来调整该用户的权限和状态信息。<br><img src="https://img-blog.csdnimg.cn/20210630032318305.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>·<br>此外，我们也支持通过输入用户名来查询其相应历史记录。鉴于用户的记录数量一般较大，我们在此处也依旧设置了分页显示结果，每页最大记录数为10。<br><img src="https://img-blog.csdnimg.cn/20210630032926113.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>·<br>鉴于该项目代码较多，博客中指贴出小部分做示例，完整代码详见：<a target="_blank" rel="noopener" href="https://github.com/itstime/Web-Programming">GitHub——Web Programming
+</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+          
+            <a href="/tags/Web%E7%BC%96%E7%A8%8B/" rel="tag"># Web编程</a>
+          
+            <a href="/tags/Angular/" rel="tag"># Angular</a>
+          
+            <a href="/tags/express/" rel="tag"># express</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/27/Web%E7%BC%96%E7%A8%8B%E6%9C%9F%E4%B8%AD%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94Nodejs%E6%96%B0%E9%97%BB%E7%88%AC%E8%99%AB%E5%8F%8A%E6%9F%A5%E8%AF%A2%E7%BD%91%E7%AB%99/" rel="next" title="Web编程期中实践——Nodejs新闻爬虫及查询网站">
+                <i class="fa fa-chevron-left"></i> Web编程期中实践——Nodejs新闻爬虫及查询网站
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/03/25/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/hyDududu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:hydududu@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%A6%81%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">项目要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">数据库设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">基础配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%B3%A8%E5%86%8C%E3%80%81%E7%99%BB%E5%BD%95%E5%8F%8A%E7%99%BB%E5%87%BA"><span class="nav-number">4.</span> <span class="nav-text">用户注册、登录及登出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E9%97%BB%E6%9F%A5%E8%AF%A2"><span class="nav-number">5.</span> <span class="nav-text">新闻查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E8%A1%A8%E5%B1%95%E7%A4%BA"><span class="nav-number">6.</span> <span class="nav-text">图表展示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%B1%E7%8A%B6%E5%9B%BE"><span class="nav-number">6.1.</span> <span class="nav-text">柱状图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A5%BC%E5%9B%BE"><span class="nav-number">6.2.</span> <span class="nav-text">饼图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%98%E7%BA%BF%E5%9B%BE"><span class="nav-number">6.3.</span> <span class="nav-text">折线图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%8D%E4%BA%91"><span class="nav-number">6.4.</span> <span class="nav-text">词云</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">用户管理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共字</span>
+</div>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hyDududu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

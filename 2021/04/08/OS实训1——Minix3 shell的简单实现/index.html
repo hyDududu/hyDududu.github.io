@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Minix3,OS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="shell实现要求 Shell主体为一个while循环，对用户键盘输入命令进行操作并给出反馈。该实验中，我们主要实现以下几个命令：  cd：shell也是一个程序，启动时迷你型会给它分配一个当前工作目录，利用chdir系统调用可以移动Shell的工作目录。 history n：保存每次输入的命令，打印最近n条命令。  exit：退出Shell的while循环，结束Shell的main函数。 myt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS实训——Minix3 shell的简单实现">
+<meta property="og:url" content="https://hydududu.github.io/2021/04/08/OS%E5%AE%9E%E8%AE%AD1%E2%80%94%E2%80%94Minix3%20shell%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="hyDududu">
+<meta property="og:description" content="shell实现要求 Shell主体为一个while循环，对用户键盘输入命令进行操作并给出反馈。该实验中，我们主要实现以下几个命令：  cd：shell也是一个程序，启动时迷你型会给它分配一个当前工作目录，利用chdir系统调用可以移动Shell的工作目录。 history n：保存每次输入的命令，打印最近n条命令。  exit：退出Shell的while循环，结束Shell的main函数。 myt">
+<meta property="og:locale">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408165831461.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170626438.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170706269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020040817072163.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170735216.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170753901.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170812596.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020040817083087.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170844745.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170913306.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200408170925686.png">
+<meta property="article:published_time" content="2021-04-08T09:11:27.000Z">
+<meta property="article:modified_time" content="2022-03-27T06:35:58.577Z">
+<meta property="article:author" content="hyDududu">
+<meta property="article:tag" content="Minix3">
+<meta property="article:tag" content="OS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200408165831461.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hyDududu.github.io/2021/04/08/OS实训1——Minix3 shell的简单实现/"/>
+
+
+
+
+
+  <title>OS实训——Minix3 shell的简单实现 | hyDududu</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">hyDududu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hyDududu.github.io/2021/04/08/OS%E5%AE%9E%E8%AE%AD1%E2%80%94%E2%80%94Minix3%20shell%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hyDududu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OS实训——Minix3 shell的简单实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-08T17:11:27+08:00">
+                2021-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%BE%E7%A8%8B%E4%BD%9C%E4%B8%9A/" itemprop="url" rel="index">
+                    <span itemprop="name">课程作业</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="shell实现要求"><a href="#shell实现要求" class="headerlink" title="shell实现要求"></a>shell实现要求</h2><p> Shell主体为一个while循环，对用户键盘输入命令进行操作并给出反馈。<br>该实验中，我们主要实现以下几个命令：</p>
+<ol>
+<li>cd：shell也是一个程序，启动时迷你型会给它分配一个当前工作目录，利用chdir系统调用可以移动Shell的工作目录。</li>
+<li>history n：保存每次输入的命令，打印最近n条命令。 </li>
+<li>exit：退出Shell的while循环，结束Shell的main函数。</li>
+<li>mytop：参考Minix终端输入top命令的输出信息，最终输出总体内存大小、空闲内存大小、缓存大小和总体CPU使用占比。</li>
+<li>后台运行：对末尾包含&amp;参数的命令，通过将子进程的标准输入、输出映射成 &#x2F;dev&#x2F;null来屏蔽键盘和控制台，并调用signal(SIGCHLD,SIG_IGN)，使minix接管此进程，shell不等待进程结束，直接返回。</li>
+<li>重定向：利用dup2函数，将某个打开文件的文件描述符fd映射到标准输入or输出，实现覆盖写“&gt;”、追加写“&gt;&gt;”和文件输入“&lt;”。</li>
+<li>管道：利用fork及dup2实现进程间同步。</li>
+</ol>
+<span id="more"></span>
+
+<h2 id="shell实现代码"><a href="#shell实现代码" class="headerlink" title="shell实现代码"></a>shell实现代码</h2><p>对输入命令，Shell先将其分解成单词序列，再根据命令名称分为两类分别处理。<br>一类是shell内置命令(如cd，history，exit)，识别后，执行对应操作。<br>另一类是program命令(如&#x2F;bin&#x2F; 目录下的ls，grep )，识别后，创建一个新进程执行命令，并等待进程结束。</p>
+<h3 id="参数设置"><a href="#参数设置" class="headerlink" title="参数设置"></a>参数设置</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> M 256</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SIZE 256</span></span><br><span class="line">  	<span class="type">char</span> path[M], input[M], *command[M], *temp, history[M][M];		<span class="comment">//save path, input command, processes command, a temporary char, historical command </span></span><br><span class="line">    <span class="type">int</span> i, j, n_com, n_his = <span class="number">0</span>;		<span class="comment">//n_com: the number of blocks of a command, n_his:the number of all commands</span></span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> k, h, flag_back, flag_out, flag_add, flag_in, flag_pipe, pid, pid2, status, status2, fd1, fd2;		<span class="comment">//flag: 分别标识后台运行、覆盖写、追加写、输入、管道状态 </span></span><br><span class="line">    <span class="type">char</span> file_out[M], file_in[M], *command2[M];</span><br><span class="line"></span><br><span class="line">   <span class="type">char</span> buffer[SIZE] = <span class="string">&quot;&quot;</span>, *pagesize, *total, *freepage, *cached, *temp1;        <span class="comment">//*pagesize不要赋为pagesize[SIZE],否则后期无法用 atoi()转为数字 </span></span><br><span class="line">   <span class="type">int</span> count = <span class="number">0</span>, fd;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Shell主体"><a href="#Shell主体" class="headerlink" title="Shell主体"></a>Shell主体</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> &#123;</span><br><span class="line">	 <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">	       <span class="comment">//get path </span></span><br><span class="line">	       getcwd(path, <span class="keyword">sizeof</span>(path) - <span class="number">1</span>);</span><br><span class="line">	       <span class="built_in">printf</span>(<span class="string">&quot;shell:%s%% &quot;</span>, path);</span><br><span class="line">	</span><br><span class="line">	       <span class="comment">//initialize parameter</span></span><br><span class="line">	       <span class="built_in">memset</span>(input, <span class="number">0</span>, <span class="keyword">sizeof</span>(input));</span><br><span class="line">	       <span class="built_in">memset</span>(command, <span class="number">0</span>, <span class="keyword">sizeof</span>(command));</span><br><span class="line">	       n_com = <span class="number">0</span>;</span><br><span class="line">	       flag_back = <span class="number">0</span>;</span><br><span class="line">	       flag_out = <span class="number">0</span>;</span><br><span class="line">	       flag_add = <span class="number">0</span>;</span><br><span class="line">	       flag_in = <span class="number">0</span>;</span><br><span class="line">	       flag_pipe = <span class="number">0</span>;</span><br><span class="line">	       <span class="built_in">memset</span>(command2, <span class="number">0</span>, <span class="keyword">sizeof</span>(command2));</span><br><span class="line">	</span><br><span class="line">	       gets(input);        <span class="comment">//get command</span></span><br><span class="line">	</span><br><span class="line">	       <span class="comment">/* save command </span></span><br><span class="line"><span class="comment">	* ——!!! The code should follow &quot;gets(input)&quot;, or we can only get command[0] (it was cut by &quot;strtok&quot;).  </span></span><br><span class="line"><span class="comment">	        */</span></span><br><span class="line">	       <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; M; ++i) &#123;</span><br><span class="line">	           history[n_his][i] = input[i];            <span class="comment">//notice：history[0] can&#x27;t be empty</span></span><br><span class="line">	      &#125;</span><br><span class="line">	       ++n_his;</span><br><span class="line">	</span><br><span class="line">	       <span class="comment">//break command to get parameter </span></span><br><span class="line">	       temp = strtok(input, <span class="string">&quot; &quot;</span>);        <span class="comment">//char *strtok(char *s, char *delim):以delim中的字符为分界符，将s切分成一个个子串</span></span><br><span class="line">	       <span class="keyword">while</span> (temp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">	           command[n_com] = temp;</span><br><span class="line">	           n_com++;</span><br><span class="line">	           temp = strtok(<span class="literal">NULL</span>, <span class="string">&quot; &quot;</span>);     <span class="comment">//将strtok第一个参数赋为空值NULL,继续分解字符串</span></span><br><span class="line">	      &#125;</span><br><span class="line">	      <span class="comment">/* 命令相关操作 */</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">0</span>；</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>该部分是在进行解析命令之前做的准备工作，将输入的字符串命令分割成块并依次存入command中。在此之前，注意要将输入的命令存入history数组中作为命令的记录。</p>
+<h3 id="三个较简单命令"><a href="#三个较简单命令" class="headerlink" title="三个较简单命令"></a>三个较简单命令</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//parse the command</span></span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[<span class="number">0</span>], <span class="string">&quot;cd&quot;</span>)) &#123;</span><br><span class="line">	<span class="keyword">if</span> (n_com != <span class="number">1</span>) &#123;</span><br><span class="line">        chdir(command[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[<span class="number">0</span>], <span class="string">&quot;exit&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n_com == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(input, <span class="string">&quot;\000&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>如上实现的是对cd、exit和无输入情况的实现，其中对n_com !&#x3D; 1进行判断以确保命令只有1块。</p>
+<h3 id="history-n"><a href="#history-n" class="headerlink" title="history n"></a>history n</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[<span class="number">0</span>], <span class="string">&quot;history&quot;</span>)) &#123;</span><br><span class="line">   <span class="keyword">if</span> (n_com != <span class="number">1</span>) &#123;</span><br><span class="line">       <span class="type">int</span> t = atoi(command[<span class="number">1</span>]);            <span class="comment">// notice: command[1] is a string, not a char! </span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">for</span> (j = n_his - t; j &lt; n_his; ++j) &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, j + <span class="number">1</span>);</span><br><span class="line">           <span class="built_in">puts</span>(history[j]);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该命令接上一部分的if-else语句，因为command[1]是字符串，故需用atoi()函数来确定需要的最近n条命令，并用for循环将其打印到屏幕。</p>
+<h3 id="mytop"><a href="#mytop" class="headerlink" title="mytop"></a>mytop</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[<span class="number">0</span>], <span class="string">&quot;mytop&quot;</span>)) &#123;</span><br><span class="line">	<span class="keyword">if</span> (n_com == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="comment">// method 1: 内存 </span></span><br><span class="line">		<span class="type">int</span> memory_sum=<span class="number">0</span>,memory_free=<span class="number">0</span>,cache_size=<span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">     	fd = open(<span class="string">&quot;/proc/meminfo&quot;</span>,O_RDONLY);</span><br><span class="line">        count=read(fd,buffer,SIZE);</span><br><span class="line">         </span><br><span class="line">        temp1=strtok(buffer,<span class="string">&quot; &quot;</span>);</span><br><span class="line">        pagesize=temp1;</span><br><span class="line">        temp1=strtok(<span class="literal">NULL</span>,<span class="string">&quot; &quot;</span>);</span><br><span class="line">        total=temp1;</span><br><span class="line">        temp1=strtok(<span class="literal">NULL</span>,<span class="string">&quot; &quot;</span>);</span><br><span class="line">        freepage=temp1;</span><br><span class="line">        temp1=strtok(<span class="literal">NULL</span>,<span class="string">&quot; &quot;</span>);</span><br><span class="line">        temp1=strtok(<span class="literal">NULL</span>,<span class="string">&quot; &quot;</span>);</span><br><span class="line">        cached=temp1;</span><br><span class="line">        close(fd);</span><br><span class="line">        </span><br><span class="line">        memory_sum=atoi(pagesize)*atoi(total)*<span class="number">1.0</span>/<span class="number">1024</span>;</span><br><span class="line">        memory_free=atoi(pagesize)*atoi(freepage)/<span class="number">1024</span>;</span><br><span class="line">        cache_size=atoi(pagesize)*atoi(cached)/<span class="number">1024</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;main memory: %dK total, %dK free, %dK cached\n&quot;</span>,memory_sum,memory_free,cache_size);</span><br><span class="line">          &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一种输出总体内存大小、空闲内存大小和缓存大小的方法。</p>
+<p>在&#x2F;proc&#x2F;meminfo中，可查看内存信息。文件中的每个参数对应含义依次是页面大小pagesize， 总页数量total ， 空闲页数量free ，最大页数量largest ，缓存页数量cached 。<br>计算内存大小公式： (pagesize * total)&#x2F;1024</p>
+<p>输出结果为：<br><img src="https://img-blog.csdnimg.cn/20200408165831461.png" alt="在这里插入图片描述"><br>*<br>接下来第二种方法，是参考top源码的代码实现的，有兴趣的话可以<a target="_blank" rel="noopener" href="https://github.com/0xffea/MINIX3/blob/master/usr.bin/top/top.c">在此处https://github.com/0xffea/MINIX3/blob/master/usr.bin/top/top.c查看top源码</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[<span class="number">0</span>], <span class="string">&quot;mytop&quot;</span>)) &#123;</span><br><span class="line">   <span class="keyword">if</span> (n_com == <span class="number">1</span>) &#123;</span><br><span class="line">       <span class="comment">//method 2 ——reference source of top</span></span><br><span class="line">       <span class="type">int</span> r, c, s = <span class="number">0</span>;</span><br><span class="line">       <span class="type">int</span> cputimemode = <span class="number">1</span>;    <span class="comment">/* bitmap. */</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (chdir(_PATH_PROC) != <span class="number">0</span>) &#123;</span><br><span class="line">           perror(<span class="string">&quot;chdir to &quot;</span> _PATH_PROC);</span><br><span class="line">           <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">       system_hz = (<span class="type">u32_t</span>) sysconf(_SC_CLK_TCK);</span><br><span class="line"></span><br><span class="line">       getkinfo();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">while</span> ((c = getopt(argc, argv, <span class="string">&quot;s:B&quot;</span>)) != EOF) &#123;</span><br><span class="line">           <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&#x27;s&#x27;</span>:</span><br><span class="line">                   s = atoi(optarg);</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">case</span> <span class="string">&#x27;B&#x27;</span>:</span><br><span class="line">                   blockedverbose = <span class="number">1</span>;</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               <span class="keyword">default</span>:</span><br><span class="line">                   <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>,</span><br><span class="line">                           <span class="string">&quot;Usage: %s [-s&lt;secdelay&gt;] [-B]\n&quot;</span>,</span><br><span class="line">                           argv[<span class="number">0</span>]);</span><br><span class="line">                   <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (s &lt; <span class="number">1</span>)</span><br><span class="line">           s = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">       <span class="comment">/* Catch window size changes so display is updated properly</span></span><br><span class="line"><span class="comment">                * right away.</span></span><br><span class="line"><span class="comment">                */</span></span><br><span class="line">       signal(SIGWINCH, sigwinch);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       <span class="comment">/* while循环控制无限动态刷新，直到 Ctrl-C </span></span><br><span class="line"><span class="comment">		* 或用for循环控制刷新次数，便于退出回到shell </span></span><br><span class="line"><span class="comment">		*/</span></span><br><span class="line">       <span class="keyword">for</span> (j=<span class="number">0</span>;j&lt;<span class="number">10</span>;j++)&#123;</span><br><span class="line"><span class="comment">//               while (1) &#123; </span></span><br><span class="line">           slot = <span class="number">0</span>;            <span class="comment">// notice: slot should be reset before each dynamic refresh ——注意每次动态刷新都要重置为0 </span></span><br><span class="line"></span><br><span class="line">           <span class="comment">//控制动态更新间隔所需参数</span></span><br><span class="line">           fd_set fds; </span><br><span class="line">           <span class="type">int</span> ns; </span><br><span class="line">           <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">tv</span>;</span> </span><br><span class="line"></span><br><span class="line">           showtop(cputimemode, r); <span class="comment">//打印结果 </span></span><br><span class="line">           tv.tv_sec = s;</span><br><span class="line">           tv.tv_usec = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">           FD_ZERO(&amp;fds);</span><br><span class="line">           FD_SET(STDIN_FILENO, &amp;fds);</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> ((ns = select(STDIN_FILENO + <span class="number">1</span>, &amp;fds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;tv)) &lt; <span class="number">0</span> <span class="comment">//设置动态更新间隔sleep </span></span><br><span class="line">               &amp;&amp; errno != EINTR) &#123;</span><br><span class="line">               perror(<span class="string">&quot;select&quot;</span>);</span><br><span class="line">               sleep(<span class="number">1</span>);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (ns &gt; <span class="number">0</span> &amp;&amp; FD_ISSET(STDIN_FILENO, &amp;fds)) &#123;</span><br><span class="line">               <span class="type">char</span> c;</span><br><span class="line">               <span class="keyword">if</span> (read(STDIN_FILENO, &amp;c, <span class="number">1</span>) == <span class="number">1</span>) &#123;</span><br><span class="line">                   <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">                       <span class="keyword">case</span> <span class="string">&#x27;q&#x27;</span>:</span><br><span class="line">                           <span class="built_in">putchar</span>(<span class="string">&#x27;\r&#x27;</span>);</span><br><span class="line">                           <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                       <span class="keyword">case</span> <span class="string">&#x27;o&#x27;</span>:</span><br><span class="line">                           order++;</span><br><span class="line">                           <span class="keyword">if</span> (order &gt; ORDER_HIGHEST)</span><br><span class="line">                               order = <span class="number">0</span>;</span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                       <span class="keyword">case</span> TIMECYCLEKEY:</span><br><span class="line">                           cputimemode++;</span><br><span class="line">                           <span class="keyword">if</span> (cputimemode &gt;= (<span class="number">1L</span> &lt;&lt; CPUTIMENAMES))</span><br><span class="line">                               cputimemode = <span class="number">1</span>;</span><br><span class="line">                           <span class="keyword">break</span>;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>其中，用while或for循环控制其动态更新，而此时若不注意重置slot的话，则会导致slot最终大于nr_total，使屏幕一直输出：”top: unreasonable endpoint number xxx”。</p>
+<h3 id="后台运行-amp"><a href="#后台运行-amp" class="headerlink" title="后台运行&amp;"></a>后台运行&amp;</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[n_com - <span class="number">1</span>], <span class="string">&quot;&amp;&quot;</span>)) &#123;</span><br><span class="line">   flag_back = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> ((pid = fork()) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;fork error\n&quot;</span>);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">   <span class="keyword">if</span> (flag_back) &#123;</span><br><span class="line"><span class="comment">//    fd1=open(&quot;/dev/null&quot;,O_RDWR | O_CREAT | O_TRUNC, 0644);</span></span><br><span class="line">       fd1 = open(<span class="string">&quot;/dev/null&quot;</span>, O_RDONLY);</span><br><span class="line">       dup2(fd1, <span class="number">0</span>);</span><br><span class="line">       dup2(fd1, <span class="number">1</span>);</span><br><span class="line">       dup2(fd1, <span class="number">2</span>);</span><br><span class="line">       signal(SIGCHLD, SIG_IGN);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">   <span class="keyword">if</span> (flag_back) &#123;</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;[process id %d]\n&quot;</span>, pid);        <span class="comment">//若为后台程序，则输出进程号</span></span><br><span class="line">       <span class="keyword">continue</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="keyword">if</span> (waitpid(pid, &amp;status, <span class="number">0</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在该实验中，若为&amp;后台运行命令，则&amp;必定出现在输入命令的最后一部分，故检验command[n_com-1]位来确定是否为&amp;命令，以标识flag_back的状态。</p>
+<p>之后，需fork进程，并在子进程中将标准输入、输出、错误都重定向到“&#x2F;dev&#x2F;null”，最后用 signal(SIGCHLD, SIG_IGN)来使Minix接管此进程。</p>
+<p>最后，在父进程中附加代码printf(“[process id %d]\n”, pid)，使得有后台进程时，输出其进程号。</p>
+<h3 id="重定向、管道"><a href="#重定向、管道" class="headerlink" title="重定向、管道"></a>重定向、管道</h3><p>状态确定：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (k = <span class="number">0</span>; k &lt; n_com; k++) &#123;</span><br><span class="line">   <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[k], <span class="string">&quot;&gt;&quot;</span>)) &#123;</span><br><span class="line">       flag_out = <span class="number">1</span>;</span><br><span class="line">       <span class="built_in">strcpy</span>(file_out, command[k + <span class="number">1</span>]); 	<span class="comment">//&quot;&gt;&quot; 后面即使重定向指向的文件 </span></span><br><span class="line"><span class="comment">//     for (h = k; h &lt; n_com - 2; h++) &#123; 		//在该实验中不需要</span></span><br><span class="line"><span class="comment">//         command[h] = command[h + 2];</span></span><br><span class="line"><span class="comment">//     &#125;</span></span><br><span class="line">       command[n_com - <span class="number">2</span>] = <span class="literal">NULL</span>;</span><br><span class="line">       n_com -= <span class="number">2</span>;</span><br><span class="line">       k--;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[k], <span class="string">&quot;&gt;&gt;&quot;</span>)) &#123;</span><br><span class="line">       flag_add = <span class="number">1</span>;</span><br><span class="line">       <span class="built_in">strcpy</span>(file_out, command[k + <span class="number">1</span>]); </span><br><span class="line">       command[n_com - <span class="number">2</span>] = <span class="literal">NULL</span>;</span><br><span class="line">       n_com -= <span class="number">2</span>;</span><br><span class="line">       k--;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[k], <span class="string">&quot;&lt;&quot;</span>)) &#123;</span><br><span class="line">       flag_in = <span class="number">1</span>;</span><br><span class="line">       <span class="built_in">strcpy</span>(file_in, command[k + <span class="number">1</span>]); </span><br><span class="line">       command[n_com - <span class="number">2</span>] = <span class="literal">NULL</span>;</span><br><span class="line">       n_com -= <span class="number">2</span>;</span><br><span class="line">       k--;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(command[k], <span class="string">&quot;|&quot;</span>)) &#123;</span><br><span class="line">       flag_pipe = <span class="number">1</span>;</span><br><span class="line">       <span class="keyword">for</span> (h = <span class="number">0</span>; h &lt; k; h++) &#123;</span><br><span class="line">           command2[h] = command[h]; 	<span class="comment">//将 &quot;|&quot; 之前的命令移至command2中 </span></span><br><span class="line">      &#125;</span><br><span class="line">       command2[k] = <span class="literal">NULL</span>;</span><br><span class="line">       <span class="keyword">for</span> (h = <span class="number">0</span>; h &lt; n_com - k - <span class="number">1</span>; h++) &#123;</span><br><span class="line">           command[h] = command[h + k + <span class="number">1</span>]; 	<span class="comment">//重置command保存 &quot;|&quot; 之后的命令</span></span><br><span class="line">      &#125;</span><br><span class="line">       command[n_com - k - <span class="number">1</span>] = <span class="literal">NULL</span>;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>此处，由于这些命令的标识符可能出现在输入命令中的任意一处，故需用一个for循环来确认其位置，而后设置它们的状态flag_xxx为1。而标识符“&gt;”、“&gt;&gt;”、“&lt;”之后一位则是重定向指向的文件，故将它们赋为file_out、file_in的值，便于之后重定向操作处理。</p>
+<p>对管道的操作稍复杂，要将“|”之前的命令移到command[2]中保存备用，再更新command数组存“|”之后的命令备用。</p>
+<p>命令执行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((pid = fork()) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">&quot;fork error\n&quot;</span>);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">   <span class="keyword">if</span> (flag_out)            <span class="comment">// &gt;</span></span><br><span class="line">  &#123;</span><br><span class="line">       fd1 = open(file_out, O_RDWR | O_CREAT | O_TRUNC, <span class="number">0644</span>);</span><br><span class="line">       <span class="keyword">if</span> (fd1 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">&quot;open error!\n&quot;</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">       dup2(fd1, <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">   <span class="keyword">if</span> (flag_add)        <span class="comment">// &gt;&gt; : O_APPEND</span></span><br><span class="line">  &#123;</span><br><span class="line">       fd1 = open(file_out, O_RDWR | O_CREAT | O_APPEND, <span class="number">0644</span>);</span><br><span class="line">       <span class="keyword">if</span> (fd1 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">&quot;open error!\n&quot;</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">       dup2(fd1, <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">   <span class="keyword">if</span> (flag_in)            <span class="comment">// &lt;</span></span><br><span class="line">  &#123;</span><br><span class="line">       fd1 = open(file_in, O_RDONLY);</span><br><span class="line">       <span class="comment">//                   fd1 = open(file_in,O_WRONLY|O_CREAT|O_TRUNC, 0644);</span></span><br><span class="line">       <span class="keyword">if</span> (fd1 &lt; <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">&quot;open error!\n&quot;</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">       dup2(fd1, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">   <span class="keyword">if</span> (flag_pipe)            <span class="comment">// |</span></span><br><span class="line">  &#123;</span><br><span class="line">       <span class="keyword">if</span> ((pid2 = fork()) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="built_in">printf</span>(<span class="string">&quot;fork2 error\n&quot;</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pid2 == <span class="number">0</span>)        <span class="comment">//子子进程中以写方式打开pipe </span></span><br><span class="line">      &#123;</span><br><span class="line">           fd2 = open(<span class="string">&quot;/tmp/tempfile&quot;</span>, O_WRONLY | O_CREAT | O_TRUNC, <span class="number">0644</span>);        <span class="comment">//新建一个临时文件，后删除 </span></span><br><span class="line">           dup2(fd2, <span class="number">1</span>);</span><br><span class="line">           execvp(command2[<span class="number">0</span>], command2);</span><br><span class="line">           <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">      &#125;</span><br><span class="line">       <span class="keyword">if</span> (waitpid(pid2, &amp;status2, <span class="number">0</span>) == <span class="number">-1</span>)        <span class="comment">//等待子子进程结束以回收 </span></span><br><span class="line">      &#123;</span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">       fd2 = open(<span class="string">&quot;/tmp/tempfile&quot;</span>, O_RDONLY);        <span class="comment">//子进程中以读方式打开管道 </span></span><br><span class="line">       dup2(fd2, <span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">   execvp(command[<span class="number">0</span>], command);        <span class="comment">//执行命令</span></span><br><span class="line">   remove(<span class="string">&quot;/tmp/tempfile&quot;</span>);</span><br><span class="line">   <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">   <span class="keyword">if</span> (waitpid(pid, &amp;status, <span class="number">0</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同&amp;命令一样，fork一个进程（它们和&amp;在同一个fork的进程中，只不过此处省略了&amp;的相关操作）。根据各flag_xxx的状态来确定要执行哪一个操作。</p>
+<p>在重定向中，用fd1 &#x3D; open(file_xxx, XXX);打开所需文件，在“&gt;”中需用到可读可写O_RDWR | O_CREAT | O_TRUNC, 0644 ，在“&gt;&gt;”中需将O_TRUNC 改为O_APPEND 追加写模式，而“&lt;”则用只读O_RDONLY。之后用dup2()函数分别重定向它们的标准输入、输出即可。</p>
+<p>在管道中，由于涉及到“|”前后两个文件的协调控制问题，故需在子进程中再fork一个进程，在子子进程中重定向前一个文件的标准输出，让其写入一个新建的临时文件“&#x2F;tempfile”中。而后，等待该子子进程结束并将其回收后，在重定向后一个文件的标注输入，将前一个文件写入临时文件“&#x2F;tempfile”中的内容传给后一个文件，以达到管道的控制目的。</p>
+<p>在对以上操作定义完后，用execvp(command[0], command)将命令执行，且对管道命令，还要讲中途新建的文件“&#x2F;tempfile”删除，执行完成后退出子进程。最后在父进程中等待子进程结束并将其回收。</p>
+<p>至此，shell的全部内容已完成。</p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><ol>
+<li>cd<br> <img src="https://img-blog.csdnimg.cn/20200408170626438.png" alt="在这里插入图片描述"></li>
+<li>ls –a –l<br><img src="https://img-blog.csdnimg.cn/20200408170706269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>ls –a –l &gt; result.txt<br><img src="https://img-blog.csdnimg.cn/2020040817072163.png" alt="在这里插入图片描述"></li>
+<li>vi result.txt<br><img src="https://img-blog.csdnimg.cn/20200408170735216.png" alt="在这里插入图片描述"></li>
+<li>grep a &lt; text.txt （事先ls –a –l &gt; text.txt）<br><img src="https://img-blog.csdnimg.cn/20200408170753901.png" alt="在这里插入图片描述"></li>
+<li>ls –a –l | grep a<br><img src="https://img-blog.csdnimg.cn/20200408170812596.png" alt="在这里插入图片描述"></li>
+<li>vi result.txt &amp;<br><img src="https://img-blog.csdnimg.cn/2020040817083087.png" alt="在这里插入图片描述"></li>
+<li>history 9<br><img src="https://img-blog.csdnimg.cn/20200408170844745.png" alt="在这里插入图片描述"></li>
+<li>mytop （实际运行时是动态刷新的）<br><img src="https://img-blog.csdnimg.cn/20200408170913306.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xpdF9jaGlja2Vu,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>exit<br><img src="https://img-blog.csdnimg.cn/20200408170925686.png" alt="在这里插入图片描述"></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Minix3/" rel="tag"># Minix3</a>
+          
+            <a href="/tags/OS/" rel="tag"># OS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/04/27/Web%E7%BC%96%E7%A8%8B%E6%9C%9F%E4%B8%AD%E5%AE%9E%E8%B7%B5%E2%80%94%E2%80%94Nodejs%E6%96%B0%E9%97%BB%E7%88%AC%E8%99%AB%E5%8F%8A%E6%9F%A5%E8%AF%A2%E7%BD%91%E7%AB%99/" rel="prev" title="Web编程期中实践——Nodejs新闻爬虫及查询网站">
+                Web编程期中实践——Nodejs新闻爬虫及查询网站 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/hyDududu" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:hydududu@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#shell%E5%AE%9E%E7%8E%B0%E8%A6%81%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">shell实现要求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">shell实现代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">参数设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Shell%E4%B8%BB%E4%BD%93"><span class="nav-number">2.2.</span> <span class="nav-text">Shell主体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E8%BE%83%E7%AE%80%E5%8D%95%E5%91%BD%E4%BB%A4"><span class="nav-number">2.3.</span> <span class="nav-text">三个较简单命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#history-n"><span class="nav-number">2.4.</span> <span class="nav-text">history n</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mytop"><span class="nav-number">2.5.</span> <span class="nav-text">mytop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C-amp"><span class="nav-number">2.6.</span> <span class="nav-text">后台运行&amp;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91%E3%80%81%E7%AE%A1%E9%81%93"><span class="nav-number">2.7.</span> <span class="nav-text">重定向、管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">2.8.</span> <span class="nav-text">实验结果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共字</span>
+</div>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hyDududu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
